@@ -10,22 +10,30 @@ import com.example.tddapp.databinding.FragmentMarkdownBinding
 
 class MarkdownFragment : Fragment() {
 
-    private var _binding: FragmentMarkdownBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var _binding: FragmentMarkdownBinding
     private val viewModel: MarkdownViewModel by viewModels()
+
+    private val boldMarker = "**"
+    private val italicMarker = "$$"
+    private val underlineMarker = "%%"
+
+    private val text = "Hello! \n My name is ${boldMarker}Alexander${boldMarker}, and I`m ${italicMarker}android developer${italicMarker}, \n This is my git hub: ${underlineMarker}https://github.com/AlezZgo${underlineMarker}"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMarkdownBinding.inflate(inflater, container, false)
-        return binding.root
+        return _binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        _binding.run {
+            tv.text = text
+        }
     }
 
 }

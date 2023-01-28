@@ -6,8 +6,11 @@
     tools:context=".markdown.MarkdownFragment">
 
     <TextView
+        android:id="@+id/tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:gravity="center"
+        android:textSize="20sp"
+        tools:text="Hello" />
 
 </FrameLayout>
