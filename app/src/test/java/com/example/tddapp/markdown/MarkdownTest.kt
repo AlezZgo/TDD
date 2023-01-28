@@ -4,7 +4,7 @@ import android.text.SpannableStringBuilder
 import androidx.core.text.bold
 import androidx.core.text.italic
 import androidx.core.text.underline
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 
@@ -78,6 +78,35 @@ class MarkdownTest {
             }
 
         }
+
+        assertEquals(expected, actual)
+
+    }
+
+    @Test
+    fun `intersecting markdown text`() {
+
+        val testString =
+            "${boldMarker}This is ${italicMarker}Some text for${boldMarker} test${italicMarker}"
+
+        val parser = Markdown.Parser.Base(
+            boldMarker = boldMarker,
+            italicMarker = italicMarker,
+            underlineMarker = underlineMarker
+        )
+
+        val actual = parser.parse(testString)
+
+        val expected: SpannableStringBuilder = SpannableStringBuilder()
+            .bold {
+                append("This is ")
+            }.italic {
+                bold {
+                    append("Some text for")
+                }
+            }.italic {
+                append(" test")
+            }
 
         assertEquals(expected, actual)
 
