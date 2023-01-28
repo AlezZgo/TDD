@@ -5,6 +5,7 @@ import androidx.core.text.bold
 import androidx.core.text.italic
 import androidx.core.text.underline
 import org.junit.Assert.assertEquals
+import org.junit.BeforeClass
 import org.junit.Test
 
 
@@ -14,17 +15,22 @@ class MarkdownTest {
     private val italicMarker = "$$"
     private val underlineMarker = "%%"
 
-    @Test
-    fun `simple markdown text`() {
+    private lateinit var parser : Markdown.Parser
 
-        val testString =
-            "Hello! My name is ${boldMarker}Alexander${boldMarker},\nand I`m ${italicMarker}android developer${italicMarker},\nThis is my git hub: \n${underlineMarker}https://github.com/AlezZgo${underlineMarker}"
-
-        val parser = Markdown.Parser.Base(
+    @BeforeClass
+    fun init(){
+        parser = Markdown.Parser.Base(
             boldMarker = boldMarker,
             italicMarker = italicMarker,
             underlineMarker = underlineMarker
         )
+    }
+
+    @Test
+    fun `simple`() {
+
+        val testString =
+            "Hello! My name is ${boldMarker}Alexander${boldMarker},\nand I`m ${italicMarker}android developer${italicMarker},\nThis is my git hub: \n${underlineMarker}https://github.com/AlezZgo${underlineMarker}"
 
         val actual = parser.parse(testString)
 
@@ -47,16 +53,10 @@ class MarkdownTest {
     }
 
     @Test
-    fun `complex markdown text`() {
+    fun `complex with prefix and suffix`() {
 
         val testString =
             "Hello! My name is ${boldMarker}${boldMarker}Alexander${boldMarker},\nand I`m ${italicMarker}android developer${italicMarker}${italicMarker},\nThis is my git hub: \n${underlineMarker}${boldMarker}${italicMarker}https://github.com/AlezZgo${italicMarker}${boldMarker}${underlineMarker}"
-
-        val parser = Markdown.Parser.Base(
-            boldMarker = boldMarker,
-            italicMarker = italicMarker,
-            underlineMarker = underlineMarker
-        )
 
         val actual = parser.parse(testString)
 
@@ -84,16 +84,24 @@ class MarkdownTest {
     }
 
     @Test
+    fun `phrases duplicates`() {
+        val testString = "This is test some text for${boldMarker}test${boldMarker}"
+
+        val actual = parser.parse(testString)
+
+        val expected: SpannableStringBuilder = SpannableStringBuilder()
+            .append("This is test some text for")
+            .bold { append("test") }
+
+        assertEquals(expected, actual)
+
+    }
+
+    @Test
     fun `intersecting markdown text`() {
 
         val testString =
             "${boldMarker}This is ${italicMarker}Some text for${boldMarker} test${italicMarker}"
-
-        val parser = Markdown.Parser.Base(
-            boldMarker = boldMarker,
-            italicMarker = italicMarker,
-            underlineMarker = underlineMarker
-        )
 
         val actual = parser.parse(testString)
 
