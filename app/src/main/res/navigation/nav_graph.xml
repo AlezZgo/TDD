@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.tddapp.main.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="TDD features"
         tools:layout="@layout/fragment_first">
         <action
             android:id="@+id/action_FirstFragment_to_markdownFragment"
@@ -17,6 +17,6 @@
     <fragment
         android:id="@+id/markdownFragment"
         android:name="com.example.tddapp.markdown.MarkdownFragment"
-        android:label="fragment_markdown"
+        android:label="Markdown feature"
         tools:layout="@layout/fragment_markdown" />
 </navigation>

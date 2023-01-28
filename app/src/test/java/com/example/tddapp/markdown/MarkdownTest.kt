@@ -5,8 +5,11 @@ import androidx.core.text.bold
 import androidx.core.text.italic
 import androidx.core.text.underline
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
 
 class MarkdownTest {
@@ -17,8 +20,9 @@ class MarkdownTest {
 
     private lateinit var parser : Markdown.Parser
 
-    @BeforeClass
-    fun init(){
+
+    @Before
+    fun setUp(){
         parser = Markdown.Parser.Base(
             boldMarker = boldMarker,
             italicMarker = italicMarker,
