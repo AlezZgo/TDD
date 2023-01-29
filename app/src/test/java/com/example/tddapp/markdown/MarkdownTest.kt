@@ -1,15 +1,13 @@
 package com.example.tddapp.markdown
 
+import com.example.tddapp.markdown.Markdown.ParseResult.Style
 import android.text.SpannableStringBuilder
 import androidx.core.text.bold
 import androidx.core.text.italic
 import androidx.core.text.underline
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 
 
 class MarkdownTest {
@@ -18,11 +16,11 @@ class MarkdownTest {
     private val italicMarker = "$$"
     private val underlineMarker = "%%"
 
-    private lateinit var parser : Markdown.Parser
+    private lateinit var parser: Markdown.Parser
 
 
     @Before
-    fun setUp(){
+    fun setUp() {
         parser = Markdown.Parser.Base(
             boldMarker = boldMarker,
             italicMarker = italicMarker,
@@ -38,19 +36,32 @@ class MarkdownTest {
 
         val actual = parser.parse(testString)
 
-        val expected: SpannableStringBuilder = SpannableStringBuilder().append(
-            "Hello! My name is ",
-        ).bold {
-            append("Alexander")
-        }.append(
-            ",\n and I`m "
-        ).italic {
-            append("android developer")
-        }.append(
-            ",\n This is my git hub: \n"
-        ).underline {
-            append("https://github.com/AlezZgo")
-        }
+        val expected: List<Markdown.ParseResult> = listOf(
+            Markdown.ParseResult.Base(
+                text = "Hello! My name is ",
+                styles = emptyList()
+            ),
+            Markdown.ParseResult.Base(
+                text = "Alexander",
+                styles = listOf(Style.BOLD)
+            ),
+            Markdown.ParseResult.Base(
+                text = ",\n and I`m ",
+                styles = emptyList()
+            ),
+            Markdown.ParseResult.Base(
+                text = "android developer",
+                styles = listOf(Style.ITALIC)
+            ),
+            Markdown.ParseResult.Base(
+                text = ",\n This is my git hub: \n",
+                styles = emptyList()
+            ),
+            Markdown.ParseResult.Base(
+                text = "https://github.com/AlezZgo",
+                styles = listOf(Style.UNDERLINE)
+            ),
+        )
 
         assertEquals(expected, actual)
 
@@ -64,24 +75,32 @@ class MarkdownTest {
 
         val actual = parser.parse(testString)
 
-        val expected: SpannableStringBuilder = SpannableStringBuilder().append(
-            "Hello! My name is $boldMarker",
-        ).bold {
-            append("Alexander")
-        }.append(
-            ",\n and I`m "
-        ).italic {
-            append("android developer")
-        }.append(
-            "$italicMarker,\n This is my git hub: \n"
-        ).underline {
-            bold {
-                italic {
-                    append("https://github.com/AlezZgo")
-                }
-            }
-
-        }
+        val expected: List<Markdown.ParseResult.Base> = listOf(
+            Markdown.ParseResult.Base(
+                text = "Hello! My name is ",
+                styles = emptyList()
+            ),
+            Markdown.ParseResult.Base(
+                text = "${boldMarker}Alexander",
+                styles = listOf(Style.BOLD)
+            ),
+            Markdown.ParseResult.Base(
+                text = ",\n and I`m ",
+                styles = emptyList()
+            ),
+            Markdown.ParseResult.Base(
+                text = "android developer${italicMarker}",
+                styles = listOf(Style.ITALIC)
+            ),
+            Markdown.ParseResult.Base(
+                text = ",\n This is my git hub: \n",
+                styles = emptyList()
+            ),
+            Markdown.ParseResult.Base(
+                text = "https://github.com/AlezZgo",
+                styles = listOf(Style.BOLD,Style.ITALIC,Style.UNDERLINE)
+            ),
+        )
 
         assertEquals(expected, actual)
 
@@ -89,13 +108,20 @@ class MarkdownTest {
 
     @Test
     fun `phrases duplicates`() {
-        val testString = "This is test some text for${boldMarker}test${boldMarker}"
+        val testString = "This is test some text for ${boldMarker}test${boldMarker}"
 
         val actual = parser.parse(testString)
 
-        val expected: SpannableStringBuilder = SpannableStringBuilder()
-            .append("This is test some text for")
-            .bold { append("test") }
+        val expected: List<Markdown.ParseResult.Base> = listOf(
+            Markdown.ParseResult.Base(
+                text = "This is test some text for ",
+                styles = emptyList()
+            ),
+            Markdown.ParseResult.Base(
+                text = "test",
+                styles = listOf(Style.BOLD)
+            ),
+        )
 
         assertEquals(expected, actual)
 
@@ -109,16 +135,20 @@ class MarkdownTest {
 
         val actual = parser.parse(testString)
 
-        val expected: SpannableStringBuilder = SpannableStringBuilder()
-            .bold {
-                append("This is ")
-            }.italic {
-                bold {
-                    append("Some text for")
-                }
-            }.italic {
-                append(" test")
-            }
+        val expected: List<Markdown.ParseResult.Base> = listOf(
+            Markdown.ParseResult.Base(
+                text = "This is ",
+                styles = listOf(Style.BOLD)
+            ),
+            Markdown.ParseResult.Base(
+                text = "Some text for",
+                styles = listOf(Style.BOLD,Style.ITALIC)
+            ),
+            Markdown.ParseResult.Base(
+                text = " test",
+                styles = listOf(Style.ITALIC)
+            ),
+        )
 
         assertEquals(expected, actual)
 
