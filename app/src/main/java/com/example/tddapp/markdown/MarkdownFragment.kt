@@ -1,7 +1,12 @@
 package com.example.tddapp.markdown
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,8 +41,62 @@ class MarkdownFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         _binding.run {
-            tv.text = text
+
+            val spannable = SpannableStringBuilder("")
+
+            setSpannableWithFormat(
+                spannable,
+                "Hello ",
+                true,true,true
+            )
+
+            setSpannableWithFormat(
+                spannable,
+                "world",
+                false,true,false
+            )
+
+            tv.text = spannable
+
         }
+    }
+
+    private fun setSpannableWithFormat(
+        spannable: SpannableStringBuilder,
+        text: String,
+        boldIsActive: Boolean,
+        italicIsActive: Boolean,
+        underlineIsActive: Boolean
+    ) : SpannableStringBuilder {
+
+        val textToAppend = SpannableString(text)
+
+        if (boldIsActive) {
+            textToAppend.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                text.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        if (italicIsActive) {
+            textToAppend.setSpan(
+                StyleSpan(Typeface.ITALIC),
+                0,
+                text.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        if (underlineIsActive) {
+            textToAppend.setSpan(
+                UnderlineSpan(),
+                0,
+                text.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        return spannable.append(textToAppend)
+
     }
 
 }

@@ -1,18 +1,10 @@
 package com.example.tddapp.markdown
 
-import android.graphics.Typeface.BOLD
-import android.graphics.Typeface.ITALIC
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
-import android.text.style.UnderlineSpan
-import androidx.core.text.inSpans
-
 interface Markdown {
 
     interface Parser {
 
-        fun parse(text: String): SpannableStringBuilder
+        fun parse(text: String): List<ParseResult>
 
         class Base(
             private val boldMarker: String? = null,
@@ -20,8 +12,8 @@ interface Markdown {
             private val underlineMarker: String? = null
         ) : Parser {
 
-            override fun parse(text: String): SpannableStringBuilder {
-                val result = SpannableStringBuilder()
+            override fun parse(text: String): List<ParseResult> {
+                val result = mutableListOf <ParseResult>()
 
                 var currentIndex = 0
 
@@ -29,21 +21,15 @@ interface Markdown {
                 var italicIsActive = false
                 var underlineIsActive = false
 
-                val simpleTextToAdd = StringBuilder("")
-                val textToAppendWithFormat = SpannableStringBuilder("")
+                val simpleTextToAdd = StringBuilder()
+                val textToAppendWithFormat = StringBuilder()
 
-                while (currentIndex!=text.length-1) {
+                while (currentIndex <= text.length - 1) {
                     val char = text[currentIndex]
                     when (text.substring(currentIndex, currentIndex + 1)) {
                         boldMarker -> {
                             if (boldIsActive) {
-                                setSpannableWithFormat(
-                                    result,
-                                    textToAppendWithFormat,
-                                    boldIsActive,
-                                    italicIsActive,
-                                    underlineIsActive
-                                )
+                                //todo
                                 boldIsActive = false
                                 currentIndex += 2
                             } else {
@@ -54,13 +40,7 @@ interface Markdown {
                         }
                         italicMarker -> {
                             if (italicIsActive) {
-                                setSpannableWithFormat(
-                                    result,
-                                    textToAppendWithFormat,
-                                    boldIsActive,
-                                    italicIsActive,
-                                    underlineIsActive
-                                )
+                                //todo
                                 italicIsActive = false
                                 currentIndex += 2
                             } else {
@@ -70,13 +50,7 @@ interface Markdown {
                         }
                         underlineMarker -> {
                             if (underlineIsActive) {
-                                setSpannableWithFormat(
-                                    result,
-                                    textToAppendWithFormat,
-                                    boldIsActive,
-                                    italicIsActive,
-                                    underlineIsActive
-                                )
+                                //todo
                                 underlineIsActive = false
                                 currentIndex += 2
                             } else {
@@ -112,47 +86,22 @@ interface Markdown {
                 underlineIsActive: Boolean
             ) = boldIsActive || italicIsActive || underlineIsActive
 
-            companion object{
-                fun setSpannableWithFormat(
-                    spannable: SpannableStringBuilder,
-                    text: SpannableStringBuilder,
-                    boldIsActive: Boolean,
-                    italicIsActive: Boolean,
-                    underlineIsActive: Boolean
-                ) : SpannableStringBuilder {
-
-                    if (boldIsActive) {
-                        text.setSpan(
-                            StyleSpan(BOLD),
-                            0,
-                            text.length,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                    }
-                    if (italicIsActive) {
-                        text.setSpan(
-                            StyleSpan(ITALIC),
-                            0,
-                            text.length,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                    }
-                    if (underlineIsActive) {
-                        text.setSpan(
-                            UnderlineSpan(),
-                            0,
-                            text.length,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                    }
-                    return spannable.append(text)
-
-                }
-
-            }
-
-
         }
 
     }
+
+    interface ParseResult {
+
+        data class Base(
+            private val text: String,
+            private val styles: List<Style>
+        ) : ParseResult
+
+        enum class Style {
+            BOLD, ITALIC, UNDERLINE
+        }
+
+    }
+
+
 }
