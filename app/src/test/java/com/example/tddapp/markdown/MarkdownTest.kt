@@ -154,4 +154,71 @@ class MarkdownTest {
 
     }
 
+    @Test
+    fun `ends with bold marker and some text`() {
+
+        val testString =
+            "${boldMarker}This is ${boldMarker}test${italicMarker} amigo"
+
+        val actual = parser.parse(testString)
+
+        val expected: List<Markdown.ParseResult.Base> = listOf(
+            Markdown.ParseResult.Base(
+                text = "This is ",
+                styles = listOf(Style.BOLD)
+            ),
+            Markdown.ParseResult.Base(
+                text = "test${italicMarker} amigo",
+                styles = emptyList()
+            ),
+        )
+
+        assertEquals(expected, actual)
+
+    }
+
+    @Test
+    fun `text with missing marker at the end`() {
+
+        val testString = "${underlineMarker}${boldMarker}${italicMarker}This is ${italicMarker}${boldMarker}"
+
+        val actual = parser.parse(testString)
+
+        val expected: List<Markdown.ParseResult.Base> = listOf(
+            Markdown.ParseResult.Base(
+                text = underlineMarker,
+                styles = emptyList()
+            ),
+            Markdown.ParseResult.Base(
+                text = "This is ",
+                styles = listOf(Style.BOLD,Style.ITALIC)
+            ),
+        )
+
+        assertEquals(expected, actual)
+
+    }
+
+    @Test
+    fun `text with missing marker at the start`() {
+
+        val testString = "${boldMarker}${italicMarker}This is ${italicMarker}${boldMarker}${underlineMarker}"
+
+        val actual = parser.parse(testString)
+
+        val expected: List<Markdown.ParseResult.Base> = listOf(
+            Markdown.ParseResult.Base(
+                text = "This is ",
+                styles = listOf(Style.BOLD,Style.ITALIC)
+            ),
+            Markdown.ParseResult.Base(
+                text = underlineMarker,
+                styles = emptyList()
+            ),
+        )
+
+        assertEquals(expected, actual)
+
+    }
+
 }
